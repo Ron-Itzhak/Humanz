@@ -4,65 +4,45 @@ const baseURL = "http://localhost:9000/clients";
 const deleteURL = "http://localhost:9000/delete";
 
 function Clients() {
-  const [clients, getClients] = useState(null);
-  const [filteredClients, filterClients] = useState(null);
+  const [clients, setClients] = useState([]);
+  const [serachValue, setSearchValue] = useState("");
 
   useEffect(() => {
     console.log("useEffect fetched onMount");
     axios.get(baseURL).then((response) => {
-      getClients(response.data);
-      //filterClients(listItems);
+      setClients(response.data);
     });
   }, []);
 
-  if (!clients) return null;
+  async function deleteClient(client) {
+    //server
+    try {
+      console.log("delete pressed");
+      const response = await axios.delete(deleteURL, {
+        data: {
+          ID: client.ID,
+        },
+      });
+      console.log(response);
 
-  function showClients() {
-    var listItems = clients.map((client) => (
-      <li key={client.id}>
-        {client.Name},{client.Email},{client.ID},{client.IP}
-        <button onClick={() => deleteClient(client.ID)}>remove</button>
-      </li>
-    ));
-    filterClients(listItems);
-  }
+      if (response.status === 200) {
+        console.log(response.status);
+        console.log("status is ok");
 
-  function deleteClient(id) {
-    console.log("delete pressed");
-    axios.delete(deleteURL, {
-      data: {
-        ID: id,
-      },
-    });
+        let findEntry = clients.find((entry) => entry.ID === client.ID);
+        if (!findEntry) {
+          console.log("No such client id");
+        }
 
-    //function for deleting a client
-    let findEntry = clients.find((entry) => entry.ID === id);
-    if (!findEntry) {
-      console.log("No such client id");
+        if (findEntry) {
+          const index = clients.indexOf(findEntry);
+          clients.splice(index, 1);
+          setClients(clients.filter((client) => client));
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
-    console.log(findEntry);
-
-    const removeClient = (criteria, clients) =>
-      clients.splice(clients.indexOf(clients.find(criteria)), 1);
-
-    if (findEntry) removeClient(({ ID }) => ID === findEntry.ID, clients);
-
-    showClients();
-  }
-
-  function search(searchTerm) {
-    console.log(searchTerm);
-    var filtered = clients.filter((client) =>
-      client.Name.toLowerCase().includes(searchTerm.toLowerCase().trim())
-    );
-    filtered = filtered.map((client) => (
-      <li key={client.id}>
-        {client.Name},{client.Email},{client.ID},{client.IP}
-        <button onClick={() => deleteClient(client.ID)}>remove</button>
-      </li>
-    ));
-
-    filterClients(filtered);
   }
 
   return (
@@ -73,9 +53,37 @@ function Clients() {
         name="filter"
         type="text"
         placeholder="search..."
-        onChange={(event) => search(event.target.value)}
+        onChange={(event) => setSearchValue(event.target.value)}
       ></input>
-      <ul>{filteredClients ? filteredClients : showClients()}</ul>
+      <ul
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <li>
+          <span> Name, </span>
+          <span> Email, </span>
+          <span> ID, </span>
+          <span> Phone, </span>
+          <span> IP, </span>
+        </li>
+        {clients
+          .filter((client) =>
+            client.Name.toLowerCase().includes(serachValue.toLowerCase().trim())
+          )
+          .map((client, i) => (
+            <li key={i}>
+              <span>{client.Name}, </span>
+              <span>{client.Email}, </span>
+              <span>{client.ID}, </span>
+              <span>{client.Phone}, </span>
+              <span>{client.IP},</span>
+              <button onClick={() => deleteClient(client)}>Remove</button>
+            </li>
+          ))}
+      </ul>
     </div>
   );
 }

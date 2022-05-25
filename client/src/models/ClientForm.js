@@ -51,7 +51,7 @@ export default function ClientForm() {
         type="email"
         placeholder="Enter Email"
         {...register("Email", {
-          required: true,
+          required: "Email is needed ",
           pattern: {
             value:
               /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -61,10 +61,31 @@ export default function ClientForm() {
       <br />
       {errors.Email && <p>{errors.Email.message}</p>}
       <input
+        name="ID"
+        type="number"
+        {...register("ID", {
+          required: "ID is needed with 9 digits",
+          minLength: 9,
+        })}
+        placeholder="Enter ID"
+      />
+      <br />
+      {errors.ID && <p>{errors.ID.message}</p>}
+      <input
+        name="Phone"
+        type="text"
+        {...register("Phone", {
+          required: "Phone is needed",
+        })}
+        placeholder="Enter Phone"
+      />
+      <br />
+      {errors.Phone && <p>{errors.Phone.message}</p>}
+      <input
         name="IP"
         type="text"
         {...register("IP", {
-          required: true,
+          required: "IP is needed",
           pattern: {
             value: ipRegex,
           },
@@ -73,14 +94,6 @@ export default function ClientForm() {
       />
       <br />
       {errors.IP && <p>{errors.IP.message}</p>}
-      <input
-        name="ID"
-        type="number"
-        {...register("ID", { required: true, minLength: 9 })}
-        placeholder="Enter ID"
-      />
-      <br />
-      {errors.ID && <p>{errors.ID.message}</p>}
 
       <input name="submit" type="submit" />
     </form>

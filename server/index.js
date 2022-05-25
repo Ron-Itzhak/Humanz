@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/clients", (req, res) => {
-  res.header("Content-Type", "application/json");
+  //res.header("Content-Type", "application/json");
   res.send(JSON.stringify(clients));
 });
 
@@ -77,6 +77,7 @@ app.delete("/delete", (req, res) => {
       clients.splice(clients.indexOf(clients.find(criteria)), 1);
     if (findEntry) removeClient(({ ID }) => ID === findEntry.ID, file);
     console.log("unlinked");
+    res.status(200).send(" client deleted successfully!");
     fs.writeFile(
       "./models/data.json",
       JSON.stringify(file, null, 4),
