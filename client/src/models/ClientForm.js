@@ -3,7 +3,7 @@ import "./clientForm.css";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
-const baseURL = "http://localhost:9000/post";
+const baseURL = "https://humanz.herokuapp.com/post";
 
 export default function ClientForm() {
   const {

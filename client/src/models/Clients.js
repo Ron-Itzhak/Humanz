@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-const baseURL = "http://localhost:9000/clients";
-const deleteURL = "http://localhost:9000/delete";
+
+const baseURL = "https://humanz.herokuapp.com/clients";
+const deleteURL = "https://humanz.herokuapp.com/delete";
 
 function Clients() {
   const [clients, setClients] = useState([]);
